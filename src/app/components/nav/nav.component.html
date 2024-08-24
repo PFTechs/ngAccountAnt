@@ -1,0 +1,25 @@
+<header>
+<h1><b>AccountAnt</b></h1>
+</header>
+<body>
+<br>
+<ul ngbNav #nav="ngbNav" class="nav-pills justify-content-center">
+	<li ngbNavItem>
+		<a ngbNavLink><b>Dashboard</b></a>
+		<ng-template ngbNavContent>
+			<app-new-expenses></app-new-expenses>
+        </ng-template>
+	</li>
+	<li ngbNavItem>
+		<a ngbNavLink><b>All Items</b></a>
+		<ng-template ngbNavContent>
+			<app-all-expenses></app-all-expenses>
+		</ng-template>
+	</li>
+</ul>
+
+<div [ngbNavOutlet]="nav" class="mt-2"></div>	
+</body>
+<footer>
+<h5>Created by PFTechs® in 2024. All rights reserved.</h5>
+</footer>

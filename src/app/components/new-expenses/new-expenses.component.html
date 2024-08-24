@@ -1,0 +1,213 @@
+<div class="content">
+<div class="header">
+
+</div>
+<div class="body">
+    <br>
+    <div class="item-row">
+        <h2><b>Collections Overview</b></h2>
+        <button type="button" class="btn-primary" aria-label="Create New Expense Sheet" title="Create New Expense Sheet"
+            (click)="openExpenseSheet()">
+            + New Collection
+        </button>
+    </div>
+    <br>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col"># No.</th>
+                <th scope="col">Collection Name</th>
+                <th scope="col">No. Items</th>
+                <th scope="col">Paid</th>
+                <th scope="col">Outstanding</th>
+                <th scope="col">Total Value</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(collection of this.collections; track collection.id; let i = $index){
+            <tr>
+                <td>{{i + 1 | number}}</td>
+                <td>{{collection.name}}</td>
+                <td>{{collection.items.length}}</td>
+                <td>£ {{getCollectionPaidTotals(collection) | number: '1.2-2'}}</td>
+                <td>£ {{getCollectionOutstandingTotals(collection) | number: '1.2-2'}}</td>
+                <td>£ {{getCollectionTotals(collection) | number: '1.2-2'}}</td>
+                <td><button type="button" class="btn-small" title="Info" (click)="editCollection(collection, i)">
+                        <fa-icon [icon]="faInfo"></fa-icon>
+                    </button>
+                    <button type="button" class="btn-small" title="Delete" (click)="deleteCollection(i, collection)">
+                        <fa-icon [icon]="faTrash"></fa-icon>
+                    </button>
+                </td>
+            </tr>
+            }
+            <br>
+            <tr>
+                <td><b>Totals</b></td>
+                <td></td>
+                <td></td>
+                <td><b>£ {{getAllCollectionFigures('paid') | number: '1.2-2'}}</b></td>
+                <td><b>£ {{getAllCollectionFigures('outstanding') | number: '1.2-2'}}</b></td>
+                <td><b>£ {{getAllCollectionFigures('totals') | number: '1.2-2'}}</b></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+<br><br>
+<h2><b>Origins Overview</b></h2>
+<br>    <table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col"># No.</th>
+            <th scope="col">Origin Name</th>
+            <th scope="col">No. Items</th>
+            <th scope="col">Paid</th>
+            <th scope="col">Outstanding</th>
+            <th scope="col">Total Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for(origin of this.getAllDistinctOrigins(); track origin; let i = $index){
+        <tr>
+            <td>{{i + 1 | number}}</td>
+            <td>{{origin}}</td>
+            <td>{{this.getAllOriginsLength(origin)}}</td>
+            <td>£ {{getAllCollectionTotals(origin, 'paid') | number: '1.2-2'}}</td>
+            <td>£ {{getAllCollectionTotals(origin, 'outstanding') | number: '1.2-2'}}</td>
+            <td>£ {{getAllCollectionTotals(origin, 'totals') | number: '1.2-2'}}</td>
+        </tr>
+        }
+        <br>
+        <tr>
+            <td><b>Totals</b></td>
+            <td></td>
+            <td></td>
+            <td><b>£ {{getAllCollectionFigures('paid') | number: '1.2-2'}}</b></td>
+            <td><b>£ {{getAllCollectionFigures('outstanding') | number: '1.2-2'}}</b></td>
+            <td><b>£ {{getAllCollectionFigures('totals') | number: '1.2-2'}}</b></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+</div>
+</div>
+<ng-template #expenseSheet>
+    <div class="offcanvas-header">
+        <h2>Collection</h2>
+        <button type="button" class="close" aria-label="Close" title="Close" (click)="close()">
+        <fa-icon [icon]="faClose"></fa-icon>
+        </button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="row name-row">
+            <div class="list-group">
+                <label for="CollectionName">Name of Collection</label>
+                <input class="list-group-item name" name="CollectionName" type="text" placeholder="    e.g: August 2024"
+                    required [(ngModel)]="this.collectionName">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">
+                <div class="list-group">
+                    <label>Item Name</label>
+                    <input type="text" class="list-group-item" name="item-name" placeholder="Miss Pita Dinner" required
+                        [(ngModel)]="this._name"><br>
+                    <label>Item Amount</label>
+                    <input type="number" class="list-group-item" name="item-amount" placeholder="25.98" required
+                        [(ngModel)]="this._amount"><br>
+                    <label>Item Origin</label>
+                    <input type="text" class="list-group-item" name="item-origin" placeholder="Peter"
+                        [(ngModel)]="this._origin"><br>
+                    <label>Item Comment</label>
+                    <input type="text" class="list-group-item" name="item-comment" placeholder="tip £2.80"
+                        [(ngModel)]="this._comment"><br>
+                </div>
+                <div class="button-group">
+                    <button class="btn-primary" (click)="this.addExpense()"
+                        (onkeypress)="this.addExpense()">Add</button>
+                    <button class="btn-primary" (click)="this.submit()">Finalize</button>
+                </div>
+            </div>
+            <div class="col-9">
+                <!-- @if(items != undefined && items.length){ -->
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Origin</th>
+                            <th scope="col">Paid</th>
+                            <th scope="col">Comment</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for(item of items; track item.id; let i = $index){
+                        <tr>
+                            <td>{{i + 1 | number}}</td>
+                            <td>{{item.name}}</td>
+                            <td>£ {{item.amount | number: '1.2-2'}}</td>
+                            <td>{{item.origin}}</td>
+                            <td><input type="checkbox" title="Paid" [(ngModel)]="item.paid"
+                                    (click)="this.togglePaid(i)"></td>
+                            <td>{{item.comment}}</td>
+                            <td><button type="button" class="btn-small" aria-label="Delete Item" title="Delete Item"
+                                    (click)="removeItem(i)">
+                                    <fa-icon [icon]="faTrash"></fa-icon>
+                                </button></td>
+                        </tr>
+                        }
+                        <br>
+                        <tr>
+                            <td><b>Totals</b></td>
+                            <td><b>£ {{getTotals() | number: '1.2-2'}}</b></td>
+                            <td><b>Outstanding</b></td>
+                            <td><b>£ {{getOutstandingTotals() | number: '1.2-2'}}</b></td>
+                            <td><b>Paid</b></td>
+                            <td><b>£ {{getPaidTotals() | number: '1.2-2'}}</b></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <h3>Summary By Origins</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col"># No.</th>
+                        <th scope="col">Origins</th>
+                        <th scope="col">Number Of Items</th>
+                        <th scope="col">Paid</th>
+                        <th scope="col">Outstanding</th>
+                        <th scope="col">Totals</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(origin of getDistinctOrigins(); track origin; let i = $index){
+                    <tr>
+                        <td>{{i + 1}}</td>
+                        <td>{{origin}}</td>
+                        <td>{{getOriginLenght(origin)}}</td>
+                        <td><b>£ {{getOriginPaidTotals(origin) | number: '1.2-2'}}</b></td>
+                        <td><b>£ {{getOriginOutstandingTotals(origin) | number: '1.2-2'}}</b></td>
+                        <td><b>£ {{getOriginTotals(origin) | number: '1.2-2'}}</b></td>
+                    </tr>
+                    }
+                    <br>
+                    <tr>
+                        <td><b>Totals</b></td>
+                        <td></td>
+                        <td></td>
+                        <td><b>£ {{getPaidTotals() | number: '1.2-2'}}</b></td>
+                        <td><b>£ {{getOutstandingTotals() | number: '1.2-2'}}</b></td>
+                        <td><b>£ {{getTotals() | number: '1.2-2'}}</b></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</ng-template>
