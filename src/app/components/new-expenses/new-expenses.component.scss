@@ -1,0 +1,107 @@
+
+.content{
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+
+h1{
+    // padding-top: 2rem;
+    // padding-left: 3rem;
+}
+
+h3{
+    padding-top: 2rem;
+}
+
+.header{
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.button-group{
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-around;
+}
+
+.btn-small{
+    width: 1.75rem;
+    border: 0;
+    border-radius: .4rem;
+    background-color: transparent;
+    color: black;
+    margin-left: 1rem;
+    &:hover{
+        background-color: black;
+        color: white;
+    }
+}
+
+.btn-primary{
+    border-radius: .40rem;
+    background-color: black;
+    color: white;
+    &:hover{
+        background-color: white;
+        color: black;
+    }
+}
+
+.row{
+    padding-left: 3rem;
+    padding-right: 3rem;
+}
+
+.list-group-item{
+    border-radius: .40rem;
+}
+
+label{
+    font-weight: bold;
+}
+
+.offcanvas-header{
+    background-color: black;
+    color: white;
+    justify-content: space-between;
+}
+
+.close{
+    background-color: transparent;
+    color: white;
+    font-size: 1.75;
+    font-weight: bold;
+    border: 0;
+    border-radius: .4rem;
+    &:hover{
+        background-color: white;
+        color: black;
+    }
+}
+
+.offcanvas.offcanvas-w95{
+    --bs-offcanvas-width: 95vw;
+    top: 5vh;
+    bottom: 5vh;
+    border-radius: .4rem;
+}
+
+.name-row{
+    display: flex;
+    justify-content: left;
+    border-radius: .40rem;
+    line-height: 2rem;
+    margin-bottom: 3rem;
+    font-size: large;
+}
+
+.name{
+    font-size: 1.5rem;
+    font-weight: bold !important;
+}
+
+.item-row{
+    display: flex;
+    justify-content: space-between;
+}

@@ -1,0 +1,44 @@
+<div class="content">
+    <br>
+    <h2><b>All Items</b></h2>
+    <br>
+    <table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Origin</th>
+            <th scope="col">Status</th>
+            <th scope="col">Comment</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for(item of items; track item.id; let i = $index){
+        <tr>
+            <td>{{i + 1 | number}}</td>
+            <td>{{item.name}}</td>
+            <td>£ {{item.amount | number: '1.2-2'}}</td>
+            <td>{{item.origin}}</td>
+            <td>
+                @if(item.paid){
+                Paid
+                }@else{
+                Outstanding
+                }
+            </td>
+            <td>{{item.comment}}</td>
+        </tr>
+        }
+        <br>
+        <tr>
+            <td><b>Totals</b></td>
+            <td></td>
+            <td><b>£ {{getTotals() | number: '1.2-2'}}</b></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+</div>
