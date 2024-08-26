@@ -1,4 +1,4 @@
-header{
+header {
     position: absolute;
     top: 0;
     left: 0;
@@ -6,31 +6,36 @@ header{
     background-color: black;
     color: white;
     vertical-align: middle;
+    display: flex;
+    justify-content: center;
     //font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-h1{
+h1 {
     display: flex;
     justify-content: center;
     // margin-top: .5rem;
 }
-h5{
+
+h5 {
     display: flex;
     justify-content: flex-end;
     margin-top: 1rem;
     margin-right: 2rem;
 }
 
-body{
+body {
     margin-top: 3rem;
 }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+.nav-pills .nav-link.active,
+.nav-pills .show>.nav-link {
     color: var(--bs-nav-pills-link-active-color);
     background-color: black;
     color: white;
     border-radius: .4rem;
 }
+
 .nav-link {
     display: block;
     padding: var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x);
@@ -43,7 +48,9 @@ body{
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
 }
 
-footer{
+footer {
+    display: flex;
+    justify-content: end;
     position: absolute;
     left: 0;
     bottom: 0;
@@ -52,4 +59,18 @@ footer{
     color: white;
     vertical-align: middle;
     height: 3.5rem;
+}
+
+.footer-logo {
+    margin-top: .75rem;
+    margin-bottom: .5rem;
+    margin-left: .5rem;
+    margin-right: .5rem;
+}
+
+.header-logo {
+        width: 3%;
+        height: 3%;
+    margin-top: 1.89rem;
+    margin-left: .5rem;
 }
