@@ -335,7 +335,7 @@ getAllCollectionTotals(origin: string, type: string): number{
             result = result + item.amount;
           break;
         case 'totals':
-          (item.origin === origin)
+          if(item.origin === origin)
             result = result + item.amount;
           break;
         default:

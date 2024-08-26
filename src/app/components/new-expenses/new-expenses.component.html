@@ -8,7 +8,7 @@
         <h2><b>Collections Overview</b></h2>
         <button type="button" class="btn-primary" aria-label="Create New Expense Sheet" title="Create New Expense Sheet"
             (click)="openExpenseSheet()">
-            + New Collection
+            <b>+ New Collection</b>
         </button>
     </div>
     <br>
@@ -86,7 +86,6 @@
             <td><b>£ {{getAllCollectionFigures('paid') | number: '1.2-2'}}</b></td>
             <td><b>£ {{getAllCollectionFigures('outstanding') | number: '1.2-2'}}</b></td>
             <td><b>£ {{getAllCollectionFigures('totals') | number: '1.2-2'}}</b></td>
-            <td></td>
         </tr>
     </tbody>
 </table>
@@ -125,8 +124,8 @@
                 </div>
                 <div class="button-group">
                     <button class="btn-primary" (click)="this.addExpense()"
-                        (onkeypress)="this.addExpense()">Add</button>
-                    <button class="btn-primary" (click)="this.submit()">Finalize</button>
+                        (onkeypress)="this.addExpense()"><b>Add</b></button>
+                    <button class="btn-primary" (click)="this.submit()"><b>Finalize</b></button>
                 </div>
             </div>
             <div class="col-9">
