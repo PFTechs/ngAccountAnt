@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, TemplateRef, ViewChild, ViewEncapsulation, ViewRef } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, TemplateRef, ViewChild, ViewEncapsulation, ViewRef } from '@angular/core';
 import { DataService } from '../../services/data.service';
 import { Collection, Item } from '../../models/objects';
 import { FormsModule } from '@angular/forms';
@@ -7,6 +7,7 @@ import { DecimalPipe } from '@angular/common';
 import { NgbOffcanvas, NgbOffcanvasRef } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faClose, faInfo, faTrash, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { DoughnutChartComponent } from '../charts/doughnut-chart/doughnut-chart.component';
 
 @Component({
   selector: 'app-new-expenses',
@@ -17,6 +18,7 @@ import { faClose, faInfo, faTrash, IconDefinition } from '@fortawesome/free-soli
     DecimalPipe,
     FormsModule,
     FontAwesomeModule,
+    DoughnutChartComponent,
   ],
   templateUrl: './new-expenses.component.html',
   styleUrl: './new-expenses.component.scss',
@@ -26,11 +28,17 @@ import { faClose, faInfo, faTrash, IconDefinition } from '@fortawesome/free-soli
 export class NewExpensesComponent implements OnInit {
   private offCanvasService = inject(NgbOffcanvas);
   public expenseSheetOffCanvas: NgbOffcanvasRef | null = null;
+  public originDetailsOffCanvas: NgbOffcanvasRef | null = null;
 
   collections: Collection[] = [];
   collectionId: number = 0;
   collectionName: string = '';
   collectionIndex: number = 0;
+
+  selectedOrigin: string | null = null;
+  selectedOriginItems: Item[] = [];
+  selectedOriginTotalsPaid: number | null = null;
+  selectedOriginTotalsOutstanding: number | null = null;
 
   edit: boolean = false;
 
@@ -55,6 +63,8 @@ export class NewExpensesComponent implements OnInit {
   }
 
   @ViewChild('expenseSheet', { read: TemplateRef }) expenseSheet!: TemplateRef<any>;
+  @ViewChild('originDetails', { read: TemplateRef }) originDetails!: TemplateRef<any>;
+
 
   openExpenseSheet(): void {
     this.expenseSheetOffCanvas = this.offCanvasService?.open(this.expenseSheet, {
@@ -65,7 +75,7 @@ export class NewExpensesComponent implements OnInit {
     });
   }
 
-  close(): void {
+  closeExpenseSheet(): void {
     if (this.changes) {
       if (confirm(
         'Are you sure you wish to leave without finalising this expense sheet?\nAll your items will be lost'
@@ -91,6 +101,23 @@ export class NewExpensesComponent implements OnInit {
     }
   }
 
+  openOriginDetails(origin: string): void {
+    this.selectedOrigin = origin;
+    this.selectedOriginItems = this.getAllItemsByOrigin(this.selectedOrigin);
+    this.getSelectedOriginTotals();
+    this.originDetailsOffCanvas = this.offCanvasService?.open(this.originDetails, {
+      position: 'end',
+      backdrop: 'static',
+      panelClass: 'offcanvas-w95',
+      ariaLabelledBy: 'Expense Sheet OffCanvas',
+    })
+  }
+
+  closeOriginDetails(): void {
+    this.originDetailsOffCanvas?.close();
+    this.selectedOrigin = null;
+  }
+
   ngOnInit(): void {
     this.getCollections();
   }
@@ -114,6 +141,16 @@ export class NewExpensesComponent implements OnInit {
         }
       })
     }
+  }
+
+  toggleOriginPaid(index: number): void {
+    this.selectedOriginItems[index].paid = !this.selectedOriginItems[index].paid;
+    this.dataService.updateItem(this.selectedOriginItems[index]).subscribe({
+      next: (result) => {
+        console.log(result);
+      }
+    })
+
   }
 
   removeItem(index: number): void {
@@ -200,10 +237,10 @@ export class NewExpensesComponent implements OnInit {
     this.expenseSheetOffCanvas?.close();
   }
 
-  getTotals(): number {
-    if (this.items != undefined) {
+  getTotals(items: Item[]): number {
+    if (items != undefined) {
       let total: number = 0;
-      this.items.forEach(item => {
+      items.forEach(item => {
         if (item.amount != null) {
           total = total + item.amount;
         }
@@ -240,16 +277,7 @@ export class NewExpensesComponent implements OnInit {
     return 0;
   }
 
-  editCollection(collection: Collection, index: number): void {
-    this.collectionId = collection.id;
-    this.collectionName = collection.name;
-    this.collectionIndex = index;
-    this.items = collection.items;
-    this.edit = true;
-    this.changes = false;
-    this.openExpenseSheet();
-  }
-
+//#region Origin Overview Functions
   public getDistinctOrigins(): string[] {
     let results: string[] = [];
     this.items.forEach((item: Item) => {
@@ -273,8 +301,8 @@ export class NewExpensesComponent implements OnInit {
   getCollectionPaidTotals(collection: Collection): number {
     let result: number = 0;
     collection.items.forEach((item: Item) => {
-      if(item.paid)
-      result = result + item.amount;
+      if (item.paid)
+        result = result + item.amount;
     })
     return result;
   }
@@ -282,8 +310,8 @@ export class NewExpensesComponent implements OnInit {
   getCollectionOutstandingTotals(collection: Collection): number {
     let result: number = 0;
     collection.items.forEach((item: Item) => {
-      if(!item.paid)
-      result = result + item.amount;
+      if (!item.paid)
+        result = result + item.amount;
     })
     return result;
   }
@@ -296,56 +324,58 @@ export class NewExpensesComponent implements OnInit {
     return result;
   }
 
-getAllCollectionFigures(type: string): number{
-  let result: number = 0;
-  this.collections.forEach((collection: Collection) => {
-    collection.items.forEach((item: Item) => {
-      switch(type){
-        case 'paid':
-          if(item.paid)
+  public getAllCollectionFigures(type: string): number {
+    let result: number = 0;
+    this.collections.forEach((collection: Collection) => {
+      collection.items.forEach((item: Item) => {
+        switch (type) {
+          case 'paid':
+            if (item.paid)
+              result = result + item.amount;
+            break;
+          case 'outstanding':
+            if (!item.paid)
+              result = result + item.amount;
+            break;
+          case 'totals':
             result = result + item.amount;
-          break;
-        case 'outstanding':
-          if(!item.paid)
-            result = result + item.amount;
-          break;
-        case 'totals':
-            result = result + item.amount;
-          break;
-        default:
-          break;
-      }
+            break;
+          default:
+            break;
+        }
+      });
     });
-  });
-  return result;
-}
+    return result;
+  }
 
-// Used in Collection Dashboard - Origin Totals
-getAllCollectionTotals(origin: string, type: string): number{
-  let result: number = 0;
-  this.collections.forEach((collection: Collection) => {
-    collection.items.forEach((item: Item) => {
-      switch(type){
-        case 'paid':
-          if(item.origin === origin && item.paid)
-            result = result + item.amount;
-          break;
-        case 'outstanding':
-          if(item.origin === origin && !item.paid)
-            result = result + item.amount;
-          break;
-        case 'totals':
-          if(item.origin === origin)
-            result = result + item.amount;
-          break;
-        default:
-          break;
-      }
+  // Used in Collection Dashboard - Origin Totals
+  getAllCollectionTotals(origin: string, type: string): number {
+    let result: number = 0;
+    this.collections.forEach((collection: Collection) => {
+      collection.items.forEach((item: Item) => {
+        switch (type) {
+          case 'paid':
+            if (item.origin === origin && item.paid)
+              result = result + item.amount;
+            break;
+          case 'outstanding':
+            if (item.origin === origin && !item.paid)
+              result = result + item.amount;
+            break;
+          case 'totals':
+            if (item.origin === origin)
+              result = result + item.amount;
+            break;
+          default:
+            break;
+        }
+      });
     });
-  });
-  return result;
-}
+    return result;
+  }
+//#endregion
 
+  //#region Origin Offcanvas Functions
   public getOriginTotals(origin: string): number {
     let results: number = 0
     this.items.forEach((item: Item) => {
@@ -388,17 +418,58 @@ getAllCollectionTotals(origin: string, type: string): number{
     return results;
   }
 
-    public getAllOriginsLength(origin: string): number {
-      let results: number = 0;
-      this.collections.forEach((collection: Collection) => {
-        collection.items.forEach((item: Item) => {
-          if (item.origin === origin) {
-            results++;
-          }
+  public getAllOriginsLength(origin: string): number {
+    let results: number = 0;
+    this.collections.forEach((collection: Collection) => {
+      collection.items.forEach((item: Item) => {
+        if (item.origin === origin) {
+          results++;
+        }
       });
     });
     return results;
   }
+
+  // Used in Collection Dashboard - Origin Totals
+  getAllItemsByOrigin(origin: string): Item[] {
+    let results: Item[] = [];
+    this.collections.forEach((collection: Collection) => {
+      collection.items.forEach((item: Item) => {
+        if (item.origin === origin)
+          results.push(item);
+      });
+    });
+    return results;
+  }
+
+  getCollectionNameByItem(item: Item): string {
+    let result = this.collections.find(x => x.id === item.collectionId);
+    return result?.name ?? "";
+  }
+
+  getSelectedOriginTotals(): void {
+    this.selectedOriginTotalsPaid = 0;
+    this.selectedOriginTotalsOutstanding = 0;
+    this.selectedOriginItems.forEach(item => {
+      if (this.selectedOriginTotalsPaid && item.paid)
+        this.selectedOriginTotalsPaid = this.selectedOriginTotalsPaid + item.amount;
+      if (this.selectedOriginTotalsOutstanding && !item.paid)
+        this.selectedOriginTotalsOutstanding = this.selectedOriginTotalsOutstanding + item.amount;
+    });
+  }
+//#endregion
+
+//#region Collections CRUD Functions
+
+editCollection(collection: Collection, index: number): void {
+  this.collectionId = collection.id;
+  this.collectionName = collection.name;
+  this.collectionIndex = index;
+  this.items = collection.items;
+  this.edit = true;
+  this.changes = false;
+  this.openExpenseSheet();
+}
 
   deleteCollection(i: number, collection: Collection): void {
     if (confirm(
@@ -422,4 +493,5 @@ getAllCollectionTotals(origin: string, type: string): number{
       this.collections.splice(i, 1);
     }
   }
+  //#endregion
 }

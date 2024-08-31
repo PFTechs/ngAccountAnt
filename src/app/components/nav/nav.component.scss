@@ -26,6 +26,7 @@ h5 {
 
 body {
     margin-top: 3rem;
+    overflow-y: auto;
 }
 
 .nav-pills .nav-link.active,
@@ -51,14 +52,22 @@ body {
 footer {
     display: flex;
     justify-content: end;
-    position: absolute;
+    position: fixed;
     left: 0;
     bottom: 0;
     right: 0;
     background-color: black;
     color: white;
-    vertical-align: middle;
+    // vertical-align: middle;
     height: 3.5rem;
+}
+
+.header-logo {
+    width: 1.6%;
+    height: 1.6%;
+    padding-top: 2rem;
+    margin-left: .5rem;
+    vertical-align: middle;
 }
 
 .footer-logo {
@@ -66,11 +75,4 @@ footer {
     margin-bottom: .5rem;
     margin-left: .5rem;
     margin-right: .5rem;
-}
-
-.header-logo {
-        width: 3%;
-        height: 3%;
-    margin-top: 1.89rem;
-    margin-left: .5rem;
 }
