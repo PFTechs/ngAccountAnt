@@ -14,86 +14,87 @@ import { DecimalPipe } from '@angular/common';
   templateUrl: './doughnut-chart.component.html',
   styleUrl: './doughnut-chart.component.scss',
 })
-export class DoughnutChartComponent implements OnInit, OnChanges{
-@Input() paid: number = 0;
-@Input() outstanding: number = 0; 
-public chart: any;
-collections: Collection[] = [];
+export class DoughnutChartComponent implements OnInit, OnChanges {
+  @Input() paid: number = 0;
+  @Input() outstanding: number = 0;
+  public chart: any;
+  collections: Collection[] = [];
 
-constructor(
-  private dataService: DataService,
-){
-}
+  constructor(
+    private dataService: DataService,
+  ) {
+  }
 
-ngOnInit(): void {
-  this.createChart();
-}
+  ngOnInit(): void {
+    this.createChart();
+  }
 
 
 
-ngOnChanges(changes: SimpleChanges): void {
-  console.log(changes);
-  this.chart.data.datasets[0].data = [changes['paid'].currentValue, changes['outstanding'].currentValue];
-  this.chart.update();
-}
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+    this.chart.data.datasets[0].data = [changes['paid'].currentValue, changes['outstanding'].currentValue];
+    this.chart.update();
+  }
 
- createChart(){
+  createChart() {
 
-  this.chart = new Chart("Totals", {
-    type: 'doughnut', //this denotes the type of chart
+    this.chart = new Chart("Totals", {
+      type: 'doughnut', //this denotes the type of chart
 
-    data: {// values on X-Axis
-      labels: ['Paid', 'Outstanding'],
-       datasets: [{
-  label: 'Totals',
-  data: [this.paid, this.outstanding ],
-  backgroundColor: [
-    'grey',
-    'black',		
-  ],
-  hoverOffset: 4
-}],
-    },
-    options: {
-      aspectRatio:1
-    }
+      data: {// values on X-Axis
 
-  });
-}
+        datasets: [{
+          label: 'Amount',
+          data: [this.paid, this.outstanding],
+          backgroundColor: [
+            'grey',
+            'black',
+          ],
+          hoverOffset: 4
+        }],
+        labels: ['Paid', 'Outstanding'],
+      },
+      options: {
+        aspectRatio: 1
+      }
 
-// getCollections(): void {
-//   this.dataService.getCollections().subscribe({
-//     next: (result: Collection[]) => {
-//       this.collections = result;
-//       console.log(this.collections);
-//       this.createChart();
-//     }
-//   })
-// }
+    });
+  }
 
-// public getAllCollectionFigures(type: string): number{
-//   let result: number = 0;
-//   this.collections.forEach((collection: Collection) => {
-//     collection.items.forEach((item: Item) => {
-//       switch(type){
-//         case 'paid':
-//           if(item.paid)
-//             result = result + item.amount;
-//           break;
-//         case 'outstanding':
-//           if(!item.paid)
-//             result = result + item.amount;
-//           break;
-//         case 'totals':
-//             result = result + item.amount;
-//           break;
-//         default:
-//           break;
-//       }
-//     });
-//   });
-//   return result;
-// }
+  // getCollections(): void {
+  //   this.dataService.getCollections().subscribe({
+  //     next: (result: Collection[]) => {
+  //       this.collections = result;
+  //       console.log(this.collections);
+  //       this.createChart();
+  //     }
+  //   })
+  // }
+
+  // public getAllCollectionFigures(type: string): number{
+  //   let result: number = 0;
+  //   this.collections.forEach((collection: Collection) => {
+  //     collection.items.forEach((item: Item) => {
+  //       switch(type){
+  //         case 'paid':
+  //           if(item.paid)
+  //             result = result + item.amount;
+  //           break;
+  //         case 'outstanding':
+  //           if(!item.paid)
+  //             result = result + item.amount;
+  //           break;
+  //         case 'totals':
+  //             result = result + item.amount;
+  //           break;
+  //         default:
+  //           break;
+  //       }
+  //     });
+  //   });
+  //   return result;
+  // }
 
 
 }
