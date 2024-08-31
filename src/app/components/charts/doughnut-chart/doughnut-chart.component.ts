@@ -15,9 +15,9 @@ import { DecimalPipe } from '@angular/common';
   styleUrl: './doughnut-chart.component.scss',
 })
 export class DoughnutChartComponent implements OnInit, OnChanges {
-  @Input() paid: number = 0;
-  @Input() outstanding: number = 0;
-  public chart: any;
+  @Input() paid: number | null = null;
+  @Input() outstanding: number | null = null;
+  public chart: any = null;
   collections: Collection[] = [];
 
   constructor(
@@ -32,9 +32,10 @@ export class DoughnutChartComponent implements OnInit, OnChanges {
 
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
+    if(changes['paid'].firstChange == false){
     this.chart.data.datasets[0].data = [changes['paid'].currentValue, changes['outstanding'].currentValue];
     this.chart.update();
+    }
   }
 
   createChart() {
