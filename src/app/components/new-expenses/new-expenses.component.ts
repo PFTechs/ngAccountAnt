@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 import { DecimalPipe } from '@angular/common';
 import { NgbOffcanvas, NgbOffcanvasRef } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faClose, faInfo, faTrash, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { faClose, faInfo, faToggleOff, faToggleOn, faTrash, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { DoughnutChartComponent } from '../charts/doughnut-chart/doughnut-chart.component';
 
 @Component({
@@ -41,8 +41,8 @@ export class NewExpensesComponent implements OnInit {
   selectedOriginTotalsOutstanding: number | null = null;
 
   edit: boolean = false;
-
   changes: boolean = false;
+  showArchived: boolean = false;
 
   newCollection: Collection | null = null;
   items: Item[] = [];
@@ -52,6 +52,8 @@ export class NewExpensesComponent implements OnInit {
   faTrash: IconDefinition;
   faInfo: IconDefinition;
   faClose: IconDefinition;
+  faToggleOn: IconDefinition;
+  faToggleOff: IconDefinition;
 
   constructor(
     private dataService: DataService,
@@ -60,6 +62,8 @@ export class NewExpensesComponent implements OnInit {
     this.faTrash = faTrash;
     this.faInfo = faInfo;
     this.faClose = faClose;
+    this.faToggleOn = faToggleOn;
+    this.faToggleOff = faToggleOff;
   }
 
   @ViewChild('expenseSheet', { read: TemplateRef }) expenseSheet!: TemplateRef<any>;
@@ -191,7 +195,7 @@ export class NewExpensesComponent implements OnInit {
   }
 
   submit(): void {
-    this.newCollection = new Collection(this.collectionId, this.collectionName, this.items);
+    this.newCollection = new Collection(this.collectionId, this.collectionName, false, this.items);
 
     if (!this.edit && this.changes) {
       this.collections.push(this.newCollection);
@@ -236,6 +240,20 @@ export class NewExpensesComponent implements OnInit {
     }
     this.expenseSheetOffCanvas?.close();
   }
+
+toggleArchiveCollection(collection: Collection, index: number): void{
+  this.collections[index].archived = !this.collections[index].archived;
+  // collection.archived = !collection.archived;
+  this.dataService.updateCollection(collection).subscribe({
+    next: (result) => {
+      console.log(result);
+    }
+  })
+}
+
+showArchive(): void{
+  this.showArchived = !this.showArchived;
+}
 
   getTotals(items: Item[]): number {
     if (items != undefined) {

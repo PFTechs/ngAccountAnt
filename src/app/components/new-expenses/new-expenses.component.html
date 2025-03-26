@@ -67,6 +67,7 @@
                         <th scope="col">Paid</th>
                         <th scope="col">Outstanding</th>
                         <th scope="col">Total Value</th>
+                        <th scope="col">Archived</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -79,6 +80,9 @@
                         <td>£ {{getCollectionPaidTotals(collection) | number: '1.2-2'}}</td>
                         <td>£ {{getCollectionOutstandingTotals(collection) | number: '1.2-2'}}</td>
                         <td>£ {{getCollectionTotals(collection) | number: '1.2-2'}}</td>
+                        <td><input type="checkbox" title="Paid" [(ngModel)]="collection.archived"
+                            (click)="this.toggleArchiveCollection(collection, i)">
+                        </td>
                         <td><button type="button" class="btn-small" title="Info"
                                 (click)="editCollection(collection, i)">
                                 <fa-icon [icon]="faInfo"></fa-icon>
@@ -98,6 +102,7 @@
                         <td><b>£ {{getAllCollectionFigures('paid') | number: '1.2-2'}}</b></td>
                         <td><b>£ {{getAllCollectionFigures('outstanding') | number: '1.2-2'}}</b></td>
                         <td><b>£ {{getAllCollectionFigures('totals') | number: '1.2-2'}}</b></td>
+                        <td></td>
                         <td></td>
                     </tr>
                 </tbody>

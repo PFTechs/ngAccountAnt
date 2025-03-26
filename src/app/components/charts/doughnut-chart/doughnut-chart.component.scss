@@ -1,7 +1,8 @@
 canvas{
-    max-height: 15rem;
+    max-height: 10rem;
     width: auto;
     overflow: auto;
+    box-sizing: border-box;
 }
 
 .chart-container{
