@@ -57,6 +57,18 @@
                     <b>+ New Collection</b>
                 </button>
             </div>
+            <div class="float-end">
+                <a><b>Show Archived  </b></a>
+                @if(this.showArchived){
+                    <fa-icon class=""
+                    [icon]="faToggleOn" 
+                    (click)="this.showArchive()"></fa-icon>
+                }@else{
+                    <fa-icon 
+                    [icon]="faToggleOff" 
+                    (click)="this.showArchive()"></fa-icon>
+                }
+            </div>
             <br>
             <table class="table table-striped">
                 <thead>
@@ -73,14 +85,15 @@
                 </thead>
                 <tbody>
                     @for(collection of this.collections; track collection.id; let i = $index){
-                    <tr>
+                        @if(!this.showArchived && !collection.archived){
+                        <tr>
                         <td>{{i + 1 | number}}</td>
                         <td>{{collection.name}}</td>
                         <td>{{collection.items.length}}</td>
                         <td>£ {{getCollectionPaidTotals(collection) | number: '1.2-2'}}</td>
                         <td>£ {{getCollectionOutstandingTotals(collection) | number: '1.2-2'}}</td>
                         <td>£ {{getCollectionTotals(collection) | number: '1.2-2'}}</td>
-                        <td><input type="checkbox" title="Paid" [(ngModel)]="collection.archived"
+                        <td><input type="checkbox" title="Archived" [(ngModel)]="collection.archived"
                             (click)="this.toggleArchiveCollection(collection, i)">
                         </td>
                         <td><button type="button" class="btn-small" title="Info"
@@ -93,6 +106,29 @@
                             </button>
                         </td>
                     </tr>
+                }
+                @if(this.showArchived){
+                    <tr>
+                        <td>{{i + 1 | number}}</td>
+                        <td>{{collection.name}}</td>
+                        <td>{{collection.items.length}}</td>
+                        <td>£ {{getCollectionPaidTotals(collection) | number: '1.2-2'}}</td>
+                        <td>£ {{getCollectionOutstandingTotals(collection) | number: '1.2-2'}}</td>
+                        <td>£ {{getCollectionTotals(collection) | number: '1.2-2'}}</td>
+                        <td><input type="checkbox" title="Archived" [(ngModel)]="collection.archived"
+                            (click)="this.toggleArchiveCollection(collection, i)">
+                        </td>
+                        <td><button type="button" class="btn-small" title="Info"
+                                (click)="editCollection(collection, i)">
+                                <fa-icon [icon]="faInfo"></fa-icon>
+                            </button>
+                            <button type="button" class="btn-small" title="Delete"
+                                (click)="deleteCollection(i, collection)">
+                                <fa-icon [icon]="faTrash"></fa-icon>
+                            </button>
+                        </td>
+                    </tr>
+                }
                     }
                     <br>
                     <tr>
