@@ -11,6 +11,7 @@
             <th scope="col">Origin</th>
             <th scope="col">Status</th>
             <th scope="col">Comment</th>
+            <th scope="col">Collection</th>
         </tr>
     </thead>
     <tbody>
@@ -28,6 +29,7 @@
                 }
             </td>
             <td>{{item.comment}}</td>
+            <td>{{this.getCollectionName(item.collectionId)}}</td>
         </tr>
         }
         <br>
@@ -35,6 +37,7 @@
             <td><b>Totals</b></td>
             <td></td>
             <td><b>£ {{getTotals() | number: '1.2-2'}}</b></td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>

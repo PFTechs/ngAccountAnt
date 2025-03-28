@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Item } from '../../models/objects';
+import { Collection, Item } from '../../models/objects';
 import { DataService } from '../../services/data.service';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class AllExpensesComponent implements OnInit{
   items: Item[] = [];
+  collections: Collection[] = [];
   errorMessage: string = '';
 
   constructor(
@@ -31,6 +32,7 @@ export class AllExpensesComponent implements OnInit{
 
   ngOnInit(): void{
     this.getItems();
+    this.getCollections();
   }
 
   getItems(): void {
@@ -38,16 +40,44 @@ export class AllExpensesComponent implements OnInit{
     this.dataService.getItems().subscribe({
       next: (result) => {
         result.forEach(r => {
-          this.items.push(r as Item);
-          console.log(r as Item);
-      
+          this.items.push(r as Item);      
         });
       },
-      error: err => this.errorMessage = err
+      error: (err) => {
+        this.errorMessage = err;
+        console.log(this.errorMessage);
+      }
     });
     console.log(this.items)
   }
   
+  getCollections(): void {
+    this.collections = [];
+    this.dataService.getCollections().subscribe({
+      next: (result) => {
+        result.forEach(r => {
+          this.collections.push(r as Collection);
+        });
+      },
+      error: (err) => {
+        this.errorMessage = err;
+        console.log(this.errorMessage);
+      }
+    });
+  }
+
+  getCollectionName(id: number): string{
+    if(id){
+      const collection = this.collections.find(x => x.id == id);
+      if(collection){
+        return collection.name;
+      }
+      return "";
+    }
+    return "";
+  }
+
+
   getTotals(): number{
     let total: number = 0;
     this.items.forEach(item => {

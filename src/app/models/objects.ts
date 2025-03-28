@@ -26,10 +26,12 @@ export class Item{
 export class Collection{
         public id: number;
         public name: string;
+        public archived: boolean;
         public items: Item[];
-    constructor(id: number, name: string, items: Item[]){
+    constructor(id: number, name: string, archived: boolean, items: Item[]){
         this.id = id,
         this.name = name;
+        this.archived = archived;
         this.items = items;
     }
 
