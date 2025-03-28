@@ -57,15 +57,19 @@
                     <b>+ New Collection</b>
                 </button>
             </div>
-            <div class="float-end">
-                <a><b>Show Archived  </b></a>
+            <div class="float-end icon-label">
+                <h5>Show Archived</h5>
                 @if(this.showArchived){
-                    <fa-icon class=""
+                    <fa-icon 
+                    class="toggle"
                     [icon]="faToggleOn" 
+                    title="Hide Archived"
                     (click)="this.showArchive()"></fa-icon>
                 }@else{
-                    <fa-icon 
+                    <fa-icon
+                    class="toggle" 
                     [icon]="faToggleOff" 
+                    title="Show Archived"
                     (click)="this.showArchive()"></fa-icon>
                 }
             </div>

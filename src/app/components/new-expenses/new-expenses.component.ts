@@ -202,7 +202,13 @@ export class NewExpensesComponent implements OnInit {
 
       this.dataService.postCollection(this.newCollection).subscribe({
         next: (results) => {
-          console.log(results as Item[]);
+          this.collections[this.collectionIndex].name = this.collectionName;
+          this.edit = false;
+          this.changes = false;
+          this.collectionId = 0;
+          this.collectionName = '';
+          this.collectionIndex = 0;
+          this.items = [];
         },
         error: err => this.errorMessage = err
       });
@@ -241,19 +247,19 @@ export class NewExpensesComponent implements OnInit {
     this.expenseSheetOffCanvas?.close();
   }
 
-toggleArchiveCollection(collection: Collection, index: number): void{
-  this.collections[index].archived = !this.collections[index].archived;
-  // collection.archived = !collection.archived;
-  this.dataService.updateCollection(collection).subscribe({
-    next: (result) => {
-      console.log(result);
-    }
-  })
-}
+  toggleArchiveCollection(collection: Collection, index: number): void {
+    this.collections[index].archived = !this.collections[index].archived;
+    // collection.archived = !collection.archived;
+    this.dataService.updateCollection(collection).subscribe({
+      next: (result) => {
+        console.log(result);
+      }
+    })
+  }
 
-showArchive(): void{
-  this.showArchived = !this.showArchived;
-}
+  showArchive(): void {
+    this.showArchived = !this.showArchived;
+  }
 
   getTotals(items: Item[]): number {
     if (items != undefined) {
@@ -295,7 +301,7 @@ showArchive(): void{
     return 0;
   }
 
-//#region Origin Overview Functions
+  //#region Origin Overview Functions
   public getDistinctOrigins(): string[] {
     let results: string[] = [];
     this.items.forEach((item: Item) => {
@@ -345,23 +351,45 @@ showArchive(): void{
   public getAllCollectionFigures(type: string): number {
     let result: number = 0;
     this.collections.forEach((collection: Collection) => {
-      collection.items.forEach((item: Item) => {
-        switch (type) {
-          case 'paid':
-            if (item.paid)
+      if (this.showArchived) {
+        collection.items.forEach((item: Item) => {
+          switch (type) {
+            case 'paid':
+              if (item.paid)
+                result = result + item.amount;
+              break;
+            case 'outstanding':
+              if (!item.paid)
+                result = result + item.amount;
+              break;
+            case 'totals':
               result = result + item.amount;
-            break;
-          case 'outstanding':
-            if (!item.paid)
-              result = result + item.amount;
-            break;
-          case 'totals':
-            result = result + item.amount;
-            break;
-          default:
-            break;
+              break;
+            default:
+              break;
+          }
+        });
+      } else {
+        if (!collection.archived) {
+          collection.items.forEach((item: Item) => {
+            switch (type) {
+              case 'paid':
+                if (item.paid)
+                  result = result + item.amount;
+                break;
+              case 'outstanding':
+                if (!item.paid)
+                  result = result + item.amount;
+                break;
+              case 'totals':
+                result = result + item.amount;
+                break;
+              default:
+                break;
+            }
+          });
         }
-      });
+      }
     });
     return result;
   }
@@ -391,7 +419,7 @@ showArchive(): void{
     });
     return result;
   }
-//#endregion
+  //#endregion
 
   //#region Origin Offcanvas Functions
   public getOriginTotals(origin: string): number {
@@ -475,19 +503,19 @@ showArchive(): void{
         this.selectedOriginTotalsOutstanding = this.selectedOriginTotalsOutstanding + item.amount;
     });
   }
-//#endregion
+  //#endregion
 
-//#region Collections CRUD Functions
+  //#region Collections CRUD Functions
 
-editCollection(collection: Collection, index: number): void {
-  this.collectionId = collection.id;
-  this.collectionName = collection.name;
-  this.collectionIndex = index;
-  this.items = collection.items;
-  this.edit = true;
-  this.changes = false;
-  this.openExpenseSheet();
-}
+  editCollection(collection: Collection, index: number): void {
+    this.collectionId = collection.id;
+    this.collectionName = collection.name;
+    this.collectionIndex = index;
+    this.items = collection.items;
+    this.edit = true;
+    this.changes = false;
+    this.openExpenseSheet();
+  }
 
   deleteCollection(i: number, collection: Collection): void {
     if (confirm(
