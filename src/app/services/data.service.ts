@@ -9,7 +9,7 @@ import { Collection, Item } from '../models/objects';
 export class DataService {
 
 //url: string = "https://localhost:44387/";
-url: string = "http://localhost:5000/";
+url: string = "http://localhost:1989/";
 
   constructor(private http: HttpClient) { }
 
