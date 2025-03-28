@@ -1,4 +1,4 @@
-FROM node:18-alpine AS build
+FROM node:19-alpine AS build
 
 # Set the working directory
 WORKDIR /app
@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Copy the rest of the application code
 COPY . .
@@ -20,6 +20,9 @@ FROM nginx:alpine
 
 # Copy the built application from the previous stage
 COPY --from=build /app/dist/ngAccountAnt /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
+
+# RUN ls -la /app/dist/ngAccountAnt
