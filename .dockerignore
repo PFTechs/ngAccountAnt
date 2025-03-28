@@ -1,0 +1,39 @@
+# Node.js dependencies
+node_modules
+npm-debug.log
+
+# Angular build output
+dist
+build
+
+# Logs
+logs
+*.log
+
+# Temporary files
+tmp
+temp
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+
+# Git files
+.git
+.gitignore
+
+# Docker files
+Dockerfile*
+.dockerignore
+
+# IDE files
+.vscode
+.idea
+*.sublime-project
+*.sublime-workspace
+
+# Other
+*.swp

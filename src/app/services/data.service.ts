@@ -8,54 +8,57 @@ import { Collection, Item } from '../models/objects';
 })
 export class DataService {
 
+//url: string = "https://localhost:44387/";
+url: string = "http://localhost:8080/";
+
   constructor(private http: HttpClient) { }
 
   getItems() : Observable<Item[]> {
-    return this.http.get<Item[]>("https://localhost:44387/api/Items")
+    return this.http.get<Item[]>(this.url + "api/Items")
     // .pipe(tap(data => console.log('All', JSON.stringify(data))),
     // catchError(this.handleError);
   }
 
   postItem(items: Item[]): Observable<any> {
-    return this.http.post("https://localhost:44387/api/Items", items)
+    return this.http.post(this.url + "api/Items", items)
       .pipe(
         catchError(this.handleError)
       );
   }
 
   updateItem(item: Item): Observable<any> {
-    return this.http.put("https://localhost:44387/api/Items/" + item.id, item)
+    return this.http.put(this.url + "api/Items/" + item.id, item)
       .pipe(
         catchError(this.handleError)
       );
   }
 
   deleteItem(id: number): Observable<any> {
-    return this.http.delete("https://localhost:44387/api/Items/" + id)
+    return this.http.delete(this.url + "api/Items/" + id)
       .pipe(
         catchError(this.handleError)
       );
   }
 
   getCollections() : Observable<Collection[]> {
-    return this.http.get<Collection[]>("https://localhost:44387/api/Collections")
+    return this.http.get<Collection[]>(this.url + "api/Collections")
     // .pipe(tap(data => console.log('All', JSON.stringify(data))),
     // catchError(this.handleError);
   }
 
   postCollection(collection: Collection): Observable<any> {
-    return this.http.post("https://localhost:44387/api/Collections", collection)
+    return this.http.post(this.url + "api/Collections", collection)
       .pipe(
         catchError(this.handleError)
       );
   }
 
 updateCollection(collection: Collection): Observable<Collection> {
-  return this.http.put<Collection>("https://localhost:44387/api/Collections/" + collection.id, collection)
+  return this.http.put<Collection>(this.url + "api/Collections/" + collection.id, collection)
 }
 
   deleteCollection(collectionId: number): Observable<any> {
-    return this.http.delete("https://localhost:44387/api/Collections/" + collectionId)
+    return this.http.delete(this.url + "api/Collections/" + collectionId)
       .pipe(
         catchError(this.handleError)
       );
