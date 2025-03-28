@@ -1,6 +1,22 @@
 <div class="content">
     <br>
     <h2><b>All Items</b></h2>
+    <div class="float-end icon-label">
+        <h5>Show Paid</h5>
+        @if(this.showPaid){
+            <fa-icon 
+            class="toggle"
+            [icon]="this.faToggleOn" 
+            title="Hide Archived"
+            (click)="this.showPaidItems()"></fa-icon>
+        }@else{
+            <fa-icon
+            class="toggle" 
+            [icon]="faToggleOff" 
+            title="Show Archived"
+            (click)="this.showPaidItems()"></fa-icon>
+        }
+    </div>
     <br>
     <table class="table table-striped">
     <thead>
@@ -15,22 +31,42 @@
         </tr>
     </thead>
     <tbody>
-        @for(item of items; track item.id; let i = $index){
-        <tr>
-            <td>{{i + 1 | number}}</td>
-            <td>{{item.name}}</td>
-            <td>£ {{item.amount | number: '1.2-2'}}</td>
-            <td>{{item.origin}}</td>
-            <td>
-                @if(item.paid){
-                Paid
-                }@else{
-                Outstanding
-                }
-            </td>
-            <td>{{item.comment}}</td>
-            <td>{{this.getCollectionName(item.collectionId)}}</td>
-        </tr>
+        @if(this.showPaid){
+        @for(item of this.items; track item.id; let i = $index){
+                <tr>
+                    <td>{{i + 1 | number}}</td>
+                    <td>{{item.name}}</td>
+                    <td>£ {{item.amount | number: '1.2-2'}}</td>
+                    <td>{{item.origin}}</td>
+                    <td>
+                        @if(item.paid){
+                        Paid
+                        }@else{
+                        Outstanding
+                        }
+                    </td>
+                    <td>{{item.comment}}</td>
+                    <td>{{this.getCollectionName(item.collectionId)}}</td>
+                </tr>
+        }
+        }@else{
+            @for(item of this.unpaidItems; track item.id; let i = $index){
+                <tr>
+                    <td>{{i + 1 | number}}</td>
+                    <td>{{item.name}}</td>
+                    <td>£ {{item.amount | number: '1.2-2'}}</td>
+                    <td>{{item.origin}}</td>
+                    <td>
+                        @if(item.paid){
+                        Paid
+                        }@else{
+                        Outstanding
+                        }
+                    </td>
+                    <td>{{item.comment}}</td>
+                    <td>{{this.getCollectionName(item.collectionId)}}</td>
+                </tr>
+        }
         }
         <br>
         <tr>

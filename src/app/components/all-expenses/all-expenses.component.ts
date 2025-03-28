@@ -3,6 +3,8 @@ import { Collection, Item } from '../../models/objects';
 import { DataService } from '../../services/data.service';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faToggleOn, faToggleOff, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-all-expenses',
@@ -11,19 +13,28 @@ import { FormsModule } from '@angular/forms';
     FormsModule,
     CommonModule,
     DecimalPipe,
+    FontAwesomeModule,
   ],
   templateUrl: './all-expenses.component.html',
   styleUrl: './all-expenses.component.scss'
 })
 export class AllExpensesComponent implements OnInit{
   items: Item[] = [];
+  unpaidItems: Item[] = [];
   collections: Collection[] = [];
   errorMessage: string = '';
+  showPaid: boolean = false;
+
+  faToggleOn: IconDefinition;
+  faToggleOff: IconDefinition;
 
   constructor(
     private dataService: DataService,
   )
-  {}
+  {
+    this.faToggleOn = faToggleOn;
+    this.faToggleOff = faToggleOff;
+  }
 
     public _name: string = '';
     public _amount: number = 0.00;
@@ -31,7 +42,7 @@ export class AllExpensesComponent implements OnInit{
     public _comment: string = '';
 
   ngOnInit(): void{
-    this.getItems();
+    // this.getItems();
     this.getCollections();
   }
 
@@ -53,10 +64,17 @@ export class AllExpensesComponent implements OnInit{
   
   getCollections(): void {
     this.collections = [];
+    this.items = [];
     this.dataService.getCollections().subscribe({
       next: (result) => {
         result.forEach(r => {
           this.collections.push(r as Collection);
+          r.items.forEach(i => {
+            this.items.push(i as Item);
+            if(!i.paid){
+              this.unpaidItems.push(i as Item);
+            }
+          });
         });
       },
       error: (err) => {
@@ -77,14 +95,25 @@ export class AllExpensesComponent implements OnInit{
     return "";
   }
 
+showPaidItems(): void {
+    this.showPaid = !this.showPaid;
+  }
 
   getTotals(): number{
     let total: number = 0;
-    this.items.forEach(item => {
-      if (item.amount != null){
-      total = total + item.amount;
-      }
-    });
+    if(!this.showPaid){
+      this.items.forEach(item => {
+        if (item.amount != null && !item.paid){
+          total = total + item.amount;
+        }
+      });
+    }else{
+      this.items.forEach(item => {
+        if (item.amount != null){
+        total = total + item.amount;
+        }
+      });
+    }
     return total;
   }
 }

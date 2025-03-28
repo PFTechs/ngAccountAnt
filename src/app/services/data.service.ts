@@ -8,8 +8,8 @@ import { Collection, Item } from '../models/objects';
 })
 export class DataService {
 
-url: string = "https://localhost:44387/";
-//url: string = "http://localhost:8080/";
+//url: string = "https://localhost:44387/";
+url: string = "http://localhost:5000/";
 
   constructor(private http: HttpClient) { }
 

@@ -31,6 +31,7 @@ export class NewExpensesComponent implements OnInit {
   public originDetailsOffCanvas: NgbOffcanvasRef | null = null;
 
   collections: Collection[] = [];
+  unarchivedCollections: Collection[] = [];
   collectionId: number = 0;
   collectionName: string = '';
   collectionIndex: number = 0;
@@ -130,6 +131,11 @@ export class NewExpensesComponent implements OnInit {
     this.dataService.getCollections().subscribe({
       next: (result: Collection[]) => {
         this.collections = result;
+        this.collections.forEach((collection: Collection) => {
+          if(!collection.archived) {
+            this.unarchivedCollections.push(collection);
+          };
+        });
         console.log(this.collections);
       }
     })
