@@ -78,8 +78,13 @@ To build and run the application in a Docker container, follow these steps:
    ```
 The application will be accessible at `http://localhost:4200`.
 
+
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
 
 ## License
 This project is licensed under the MIT License.
+
+## Known Bugs
+1. Bottom Left Corner - Logo and Text Not aligned properly
+2. Collection view offcanvas - Top table's 'Outstanding' column width has to be adjusted as wraps values on lower window sizes
