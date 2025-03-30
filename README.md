@@ -88,3 +88,13 @@ This project is licensed under the MIT License.
 ## Known Bugs
 1. Bottom Left Corner - Logo and Text Not aligned properly
 2. Collection view offcanvas - Top table's 'Outstanding' column width has to be adjusted as wraps values on lower window sizes
+
+## Future Ideas
+1. Split Expense, Follow Naming Convention
+     Pseudo Code:
+       if (item.split)
+       {
+         - Split item.origin on &
+         - Get user input on split
+         - Update Origin Totals Accordingly
+       }
