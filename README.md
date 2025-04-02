@@ -88,6 +88,7 @@ This project is licensed under the MIT License.
 ## Known Bugs
 1. Bottom Left Corner - Logo and Text Not aligned properly
 2. Collection view offcanvas - Top table's 'Outstanding' column width has to be adjusted as wraps values on lower window sizes
+3. Origins Overiview should exclude items from an archived collection
 
 ## Future Ideas
 1. Split Expense, Follow Naming Convention
