@@ -132,7 +132,7 @@ export class NewExpensesComponent implements OnInit {
       next: (result: Collection[]) => {
         this.collections = result;
         this.collections.forEach((collection: Collection) => {
-          if(!collection.archived) {
+          if (!collection.archived) {
             this.unarchivedCollections.push(collection);
           };
         });
@@ -461,11 +461,21 @@ export class NewExpensesComponent implements OnInit {
   public getAllDistinctOrigins(): string[] {
     let results: string[] = [];
     this.collections.forEach((collection: Collection) => {
-      collection.items.forEach((item: Item) => {
-        if (!results.some(x => x === item.origin)) {
-          results.push(item.origin);
+      if (!this.showArchived) {
+        if (!collection.archived) {
+          collection.items.forEach((item: Item) => {
+            if (!results.some(x => x === item.origin && !collection.archived)) {
+              results.push(item.origin);
+            }
+          });
         }
-      })
+      } else {
+        collection.items.forEach((item: Item) => {
+          if (!results.some(x => x === item.origin)) {
+            results.push(item.origin);
+          }
+        });
+      }
     })
     return results;
   }

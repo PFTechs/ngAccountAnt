@@ -8,9 +8,9 @@ import { Collection, Item } from '../models/objects';
 })
 export class DataService {
 
-//url: string = "https://localhost:44387/";
-url: string = "http://localhost:1989/";
-
+url: string = "https://localhost:44387/";
+//url: string = "http://localhost:1989/";
+//url: string = "https://accountant.azurewebsites.net/"
   constructor(private http: HttpClient) { }
 
   getItems() : Observable<Item[]> {
