@@ -86,7 +86,7 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 This project is licensed under the MIT License.
 
 ## Known Bugs
-1. MacOs Only - Collection view offcanvas - Top table's 'Outstanding' column width has to be adjusted as wraps values on lower window sizes
+1. macOS only - Collection view offcanvas - Top table's 'Outstanding' column width has to be adjusted as wraps values on lower window sizes
 
 ## Future Ideas
 1. Split Expense, Follow Naming Convention
